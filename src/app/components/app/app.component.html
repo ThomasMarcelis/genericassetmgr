@@ -74,6 +74,10 @@
 				<p>{{ selectedMessage.content }}</p>
 				<p>{{ selectedMessage.owner }}</p>
 				<!-- Add more fields as needed -->
+				<p>nodes:</p>
+				<div *ngFor="let node of nodes">
+					{{node.nodeName}}
+				  </div>
 			  </div>
 			  
 		</div>
