@@ -18,6 +18,7 @@ import { MessageService } from 'src/app/services/message.service';
 export class AppComponent {
 	messages$: Observable<Message[]>;
 	total$: Observable<number>;
+	selectedMessage: Message;
 
 	@ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
 
@@ -37,4 +38,9 @@ export class AppComponent {
 		this.service.sortColumn = column;
 		this.service.sortDirection = direction;
 	}
+
+	onRowClicked(message: Message): void {
+		console.log('Message clicked: ', message);
+		this.selectedMessage = message;
+	  }
 }

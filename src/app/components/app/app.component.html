@@ -42,7 +42,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr *ngFor="let message of messages$ | async">
+						<tr *ngFor="let message of messages$ | async" (click)="onRowClicked(message)">
 							<th scope="row">{{ message.id }}</th>
 							<td>
 								<ngb-highlight [result]="message.name" [term]="service.searchTerm"></ngb-highlight>
@@ -67,8 +67,15 @@
 		</div>
 		<div class="col-lg-8">
 
-			hey here you can view the message detail
-
+			<div *ngIf="selectedMessage">
+				<h2>Selected Message:</h2>
+				<p>{{ selectedMessage.name }}</p>
+				<p>{{ selectedMessage.description }}</p>
+				<p>{{ selectedMessage.content }}</p>
+				<p>{{ selectedMessage.owner }}</p>
+				<!-- Add more fields as needed -->
+			  </div>
+			  
 		</div>
 	</div>
 
