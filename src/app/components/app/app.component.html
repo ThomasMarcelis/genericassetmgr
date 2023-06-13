@@ -1,59 +1,89 @@
-<p>This is a more complete example with a service that simulates server calling:</p>
 
-<ul>
-	<li>an observable async service to fetch a list of countries</li>
-	<li>sorting, filtering and pagination</li>
-	<li>simulated delay and loading indicator</li>
-	<li>debouncing of search requests</li>
-</ul>
+    <div class="container py-4 px-3 mx-auto">
 
-<form>
-	<div class="mb-3 row">
-		<label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
-		<div class="col-xs-3 col-sm-auto">
-			<input
-				id="table-complete-search"
-				type="text"
-				class="form-control"
-				name="searchTerm"
-				[(ngModel)]="service.searchTerm"
-			/>
+      <header class="d-flex justify-content-between align-items-md-center pb-3 mb-5 border-bottom">
+        <h1 class="h4">
+          <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-bootstrap-fill d-inline-block me-2" viewBox="0 0 16 16">
+              <path d="M6.375 7.125V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762h1.898c1.184 0 1.81-.48 1.81-1.377 0-.885-.65-1.348-1.886-1.348H6.375v2.725z"/>
+              <path d="M4.002 0a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4a4 4 0 0 0-4-4h-8zm1.06 12V3.545h3.399c1.587 0 2.543.809 2.543 2.11 0 .884-.65 1.675-1.483 1.816v.1c1.143.117 1.904.931 1.904 2.033 0 1.488-1.084 2.396-2.888 2.396H5.062z"/>
+            </svg>
+            <span>EUC MEssages</span>
+          </a>
+        </h1>
+      </header>
+
+      <h1>Messages</h1>
+	  <div class="row">
+		<div class="col-lg-4">
+
+			<form>
+				<div class="mb-3 row">
+					<label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Full text search:</label>
+					<div class="col-xs-3 col-sm-auto">
+						<input
+							id="table-complete-search"
+							type="text"
+							class="form-control"
+							name="searchTerm"
+							[(ngModel)]="service.searchTerm"
+						/>
+					</div>
+					<span class="col col-form-label" *ngIf="service.loading$ | async">Loading...</span>
+				</div>
+			
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col" sortable="name" (sort)="onSort($event)">Message</th>
+							<th scope="col" sortable="description" (sort)="onSort($event)">Description</th>
+							<th scope="col" sortable="owner" (sort)="onSort($event)">Owner</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let message of messages$ | async">
+							<th scope="row">{{ message.id }}</th>
+							<td>
+								<ngb-highlight [result]="message.name" [term]="service.searchTerm"></ngb-highlight>
+							</td>
+							<td><ngb-highlight [result]="message.description" [term]="service.searchTerm"></ngb-highlight></td>
+							<td><ngb-highlight [result]="message.owner" [term]="service.searchTerm"></ngb-highlight></td>
+						</tr>
+					</tbody>
+				</table>
+			
+				<div class="d-flex justify-content-between p-2">
+					<ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page" [pageSize]="service.pageSize">
+					</ngb-pagination>
+			
+					<select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+						<option [ngValue]="2">2 items per page</option>
+						<option [ngValue]="4">4 items per page</option>
+						<option [ngValue]="6">6 items per page</option>
+					</select>
+				</div>
+			</form>
 		</div>
-		<span class="col col-form-label" *ngIf="service.loading$ | async">Loading...</span>
+		<div class="col-lg-8">
+
+			hey here you can view the message detail
+
+		</div>
 	</div>
 
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th scope="col">#</th>
-				<th scope="col" sortable="name" (sort)="onSort($event)">Message</th>
-				<th scope="col" sortable="area" (sort)="onSort($event)">Description</th>
-				<th scope="col" sortable="population" (sort)="onSort($event)">Owner</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let message of messages$ | async">
-				<th scope="row">{{ message.id }}</th>
-				<td>
-					<ngb-highlight [result]="message.name" [term]="service.searchTerm"></ngb-highlight>
-				</td>
-				<td><ngb-highlight [result]="message.description" [term]="service.searchTerm"></ngb-highlight></td>
-				<td><ngb-highlight [result]="message.owner" [term]="service.searchTerm"></ngb-highlight></td>
-			</tr>
-		</tbody>
-	</table>
+      <hr class="col-1 my-5 mx-0">
 
-	<div class="d-flex justify-content-between p-2">
-		<ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page" [pageSize]="service.pageSize">
-		</ngb-pagination>
+      <h2>TST</h2>
+      <p>abcd</p>
 
-		<select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
-			<option [ngValue]="2">2 items per page</option>
-			<option [ngValue]="4">4 items per page</option>
-			<option [ngValue]="6">6 items per page</option>
-		</select>
-	</div>
-</form>
+      <hr class="mt-5 mb-4">
+
+      <p class="text-muted">XYZ</p>
+    </div>
+
+
+
 
 
 <router-outlet></router-outlet>

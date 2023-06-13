@@ -38,8 +38,8 @@ function sort(messages: Message[], column: SortColumn, direction: string): Messa
 function matches(message: Message, term: string, pipe: PipeTransform) {
 	return (
 		message.name.toLowerCase().includes(term.toLowerCase()) ||
-		pipe.transform(message.description).includes(term) ||
-		pipe.transform(message.content).includes(term)
+		message.description.toLowerCase().includes(term.toLowerCase()) ||
+		message.content.toLowerCase().includes(term.toLowerCase())
 	);
 }
 
@@ -65,9 +65,7 @@ export class MessageService {
 		this._search$
 			.pipe(
 				tap(() => this._loading$.next(true)),
-				debounceTime(200),
 				switchMap(() => this._search()),
-				delay(200),
 				tap(() => this._loading$.next(false)),
 			)
 			.subscribe((result) => {
@@ -125,7 +123,9 @@ export class MessageService {
         let messages = sort(sampleMessages, sortColumn, sortDirection);
 
         // 2. filter
+        console.log('messages', messages);
         messages = messages.filter((message) => matches(message, searchTerm, this.pipe));
+        console.log('messages', messages);
         const total = messages.length;
 
         // 3. paginate
