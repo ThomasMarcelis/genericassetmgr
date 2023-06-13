@@ -76,8 +76,8 @@
 				<!-- Add more fields as needed -->
 				<p>nodes:</p>
 				<div *ngFor="let node of nodes">
-					{{node.nodeName}}
-				  </div>
+					<div [style.padding-left.px]="node.depth * 20">{{ node.element.tagName }}</div>
+				  </div>				  
 			  </div>
 			  
 		</div>
