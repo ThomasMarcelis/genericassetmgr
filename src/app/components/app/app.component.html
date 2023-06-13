@@ -71,14 +71,28 @@
 				<h2>Selected Message:</h2>
 				<p>{{ selectedMessage.name }}</p>
 				<p>{{ selectedMessage.description }}</p>
-				<p>{{ selectedMessage.content }}</p>
 				<p>{{ selectedMessage.owner }}</p>
 				<!-- Add more fields as needed -->
-				<p>nodes:</p>
-				<div *ngFor="let node of nodes">
-					<div [style.padding-left.px]="node.depth * 20">{{ node.element.tagName }}</div>
-				  </div>				  
+				<p>Content:</p>
+
 			  </div>
+
+			  <table class="table table-striped">
+				<thead>
+				  <tr>
+					<th scope="col">Depth</th>
+					<th scope="col">Tag</th>
+					<th scope="col">Restrictions & Notes</th>
+				  </tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let node of nodes">
+						<th scope="row">{{ node.depth }} </th>
+						<td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
+						<td>Otto</td>
+					</tr>
+				</tbody>
+			  </table>
 			  
 		</div>
 	</div>

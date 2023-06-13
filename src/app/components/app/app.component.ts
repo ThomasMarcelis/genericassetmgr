@@ -7,6 +7,12 @@ import { Message, MessageType } from 'src/app/models/message';
 import { MessageService } from 'src/app/services/message.service';
 
 
+interface NodeInfo {
+	element: Element;
+	depth: number;
+	startTag: string;
+  }  
+
 interface NodeElement {
 	element: Element;
 	children: NodeElement[];
@@ -23,8 +29,24 @@ interface NodeElement {
 	return node;
   }
   
-  function flattenTree(node: NodeElement, depth = 0): Array<{element: Element, depth: number}> {
-	let flatList: Array<{element: Element, depth: number}> = [{element: node.element, depth: depth}];
+
+
+  function getStartTag(element: Element): string {
+	let startTag = '<' + element.nodeName;
+  
+	// If the element has any attributes, add them to the start tag
+	for (let i = 0; i < element.attributes.length; i++) {
+	  const attr = element.attributes[i];
+	  startTag += ' ' + attr.name + '="' + attr.value + '"';
+	}
+  
+	startTag += '>';
+  
+	return startTag;
+  }
+
+  function flattenTree(node: NodeElement, depth = 0): Array<NodeInfo> {
+	let flatList: Array<NodeInfo> = [{element: node.element, depth: depth, startTag: getStartTag(node.element)}];
   
 	node.children.forEach(child => {
 	  flatList = flatList.concat(flattenTree(child, depth + 1));
@@ -32,8 +54,6 @@ interface NodeElement {
   
 	return flatList;
   }
-  
-
 
 @Component({
   selector: 'app-root',
@@ -52,6 +72,8 @@ export class AppComponent {
 		this.messages$ = service.messages$;
 		this.total$ = service.total$;
 	}
+
+	
 
 	onSort({ column, direction }: SortEvent) {
 		// resetting other headers
