@@ -1,4 +1,4 @@
-import { Message, MessageType } from "./message";
+import { Message, MessageType, Restriction } from "./message";
 
 
 export let sampleMessages: Message[] = [
@@ -66,5 +66,20 @@ export let sampleMessages: Message[] = [
       MessageType.XSD,
       "ASR MOD (Asset services modernization)",
       "GBS"
+    ),
+  ];
+
+  export let sampleRestrictions: Restriction[] = [
+    new Restriction(
+      `'<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" name="city" type="xs:string"/>'`, // ID
+      'com.eoc.stpcom.005.01', // messageId
+      `'<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" name="city" type="xs:string"/>'`, // elementId
+      'can only be Brussels' // rule
+    ),
+    new Restriction(
+      `'<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" name="item" maxOccurs="unbounded">\n              <xs:complexType>\n                <xs:sequence>\n                  <xs:element name="title" type="xs:string"/>\n                  <xs:element name="note" type="xs:string" minOccurs="0"/>\n                  <xs:element name="quantity" type="xs:positiveInteger"/>\n                  <xs:element name="price" type="xs:decimal"/>\n                </xs:sequence>\n              </xs:complexType>\n            </xs:element>'`, // ID
+      'com.eoc.stpcom.005.01', // messageId
+      `'<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" name="item" maxOccurs="unbounded">\n              <xs:complexType>\n                <xs:sequence>\n                  <xs:element name="title" type="xs:string"/>\n                  <xs:element name="note" type="xs:string" minOccurs="0"/>\n                  <xs:element name="quantity" type="xs:positiveInteger"/>\n                  <xs:element name="price" type="xs:decimal"/>\n                </xs:sequence>\n              </xs:complexType>\n            </xs:element>'`, // elementId
+      'can only have select values' // rule
     ),
   ];

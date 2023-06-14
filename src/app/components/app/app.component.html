@@ -91,7 +91,8 @@
 							<td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
 							<td><button type="button" class="btn btn-primary" (click)="addNewRestriction(node)">Add New Restriction</button>
 								<div *ngFor="let restriction of selectedRestrictionMap.get(node.element.outerHTML)">
-									restriction.rule
+									{{ restriction.rule }}
+									{{ console.log(restriction) }}
 								</div>
 								<div *ngIf="showTextBox.get(node.element.outerHTML)">
 								  <input type="text" [(ngModel)]="newRestriction[node.element.outerHTML]">

@@ -145,13 +145,13 @@ export class AppComponent {
 	  async saveRestriction(node: NodeInfo) {
 
 		//TODO: Change node IDs
-		let addRestriction = new Restriction()
-		addRestriction.messageId = this.selectedMessage.id.toString();
-		addRestriction.elementId = node.element.outerHTML;
-		addRestriction.id = addRestriction.messageId + addRestriction.elementId;
+		//let addRestriction = new Restriction()
+		//addRestriction.messageId = this.selectedMessage.id.toString();
+		//addRestriction.elementId = node.element.outerHTML;
+		//addRestriction.id = addRestriction.messageId + addRestriction.elementId;
 		//addRestriction.rule = this.newRestriction;
 
-		await this.service.addRestriction(addRestriction);
+		//await this.service.addRestriction(addRestriction);
 		// Add any additional logic after saving the restriction
 		this.showTextBox.set(node.element.outerHTML, false);
 	  }

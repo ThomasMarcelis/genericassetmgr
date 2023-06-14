@@ -32,6 +32,13 @@ export class Restriction {
     messageId: string;
     elementId: string;
     rule: string;  // the actual restriction rule, e.g. "can only have select values"
+
+    constructor(id: string, messageId: string, elementId: string, rule: string) {
+        this.id = id;
+        this.messageId = messageId;
+        this.elementId = elementId;
+        this.rule = rule;
+    }
 }
 
 export class Note {

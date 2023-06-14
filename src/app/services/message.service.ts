@@ -4,6 +4,7 @@ import { Injectable, PipeTransform } from '@angular/core';
 import { Message, Restriction } from '../models/message';
 import { BehaviorSubject, Observable, Subject, debounceTime, delay, of, switchMap, tap } from 'rxjs';
 import { sampleMessages } from '../models/messages';
+import { sampleRestrictions } from '../models/messages';
 import { SortColumn, SortDirection } from '../sortable.directive';
 import { DecimalPipe } from '@angular/common';
 
