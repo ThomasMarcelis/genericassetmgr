@@ -89,10 +89,13 @@
 					<tr *ngFor="let node of nodes">
 							<th scope="row">{{ node.depth }} </th>
 							<td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
-							<td><button (click)="addNewRestriction()">Add New Restriction</button>
-								<div *ngIf="showTextBox">
-								  <input type="text" [(ngModel)]="newRestriction">
-								  <button (click)="saveRestriction(node)">Save</button>
+							<td><button type="button" class="btn btn-primary" (click)="addNewRestriction(node)">Add New Restriction</button>
+								<div *ngFor="let restriction of selectedRestrictionMap.get(node.element.outerHTML)">
+									restriction.rule
+								</div>
+								<div *ngIf="showTextBox.get(node.element.outerHTML)">
+								  <input type="text" [(ngModel)]="newRestriction[node.element.outerHTML]">
+								  <button type="button" class="btn btn-primary" (click)="saveRestriction(node)">Save</button>
 								</div></td>
 						</tr> 
 					</tbody>

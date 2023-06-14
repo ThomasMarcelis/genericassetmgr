@@ -12,6 +12,7 @@ interface NodeInfo {
 	element: Element;
 	depth: number;
 	startTag: string;
+	restrictions: Restriction[];
   }  
 
 interface NodeElement {
@@ -47,7 +48,7 @@ interface NodeElement {
   }
 
   function flattenTree(node: NodeElement, depth = 0): Array<NodeInfo> {
-	let flatList: Array<NodeInfo> = [{element: node.element, depth: depth, startTag: getStartTag(node.element)}];
+	let flatList: Array<NodeInfo> = [{element: node.element, depth: depth, startTag: getStartTag(node.element), restrictions: []}];
   
 	node.children.forEach(child => {
 	  flatList = flatList.concat(flattenTree(child, depth + 1));
@@ -68,8 +69,10 @@ export class AppComponent {
 	selectedMessage: Message;
 	@ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
 	nodes: NodeInfo[];
-	showTextBox = false;
-	newRestriction: string;
+	showTextBox: Map<string, boolean>;
+	newRestriction: Map<string, string>;
+	selectedMessageRestrictions: Restriction[];
+	selectedRestrictionMap: Map<string, Restriction[]>;
 
 	constructor(public service: MessageService) {
 		this.messages$ = service.messages$;
@@ -96,16 +99,35 @@ export class AppComponent {
 		// Parse the XML string to a DOM object
 		const parser = new DOMParser();
 		const xmlDoc = parser.parseFromString(message.content, "text/xml");
-
-		// Convert the XML to a tree data structure
 		const rootNode = xmlToTree(xmlDoc.documentElement);
-
 		// Flatten the tree to a list
+		//TODO function scope is beyond flattening now, find better name or stucture
 		const flatList = flattenTree(rootNode);
-
 		console.log(flatList);
 		this.nodes = flatList;
 
+		this.selectedRestrictionMap = new Map<string, Restriction[]>();
+		this.newRestriction = new Map<string, string>();
+		this.showTextBox = new Map<string, boolean>();
+		this.nodes.forEach(node => {
+			//outerHTML is the unique ID for the element
+			this.selectedRestrictionMap.set(node.element.outerHTML, []);
+			this.newRestriction.set(node.element.outerHTML, '');
+			this.showTextBox.set(node.element.outerHTML, false);
+		});
+		this.selectedRestrictionMap.set("unmappedrestrictions", []);
+
+		// Get the restrictions for this message, async
+		this.service.getRestrictions(message.id.toString()).then(restrictions => {
+			restrictions.forEach(restriction => {
+				const elementList = this.selectedRestrictionMap.get(restriction.elementId);
+				if(elementList) {
+					elementList.push(restriction);
+				} else {
+					this.selectedRestrictionMap.get("unmappedrestrictions")?.push(restriction);
+				}
+			});
+		});
 	  }
 
 	parseMessage(message: Message): NodeListOf<Element> {
@@ -116,9 +138,8 @@ export class AppComponent {
 		//}
 	}
 
-	addNewRestriction() {
-		this.showTextBox = true;
-		this.newRestriction = '';
+	addNewRestriction(node: NodeInfo) {
+		this.showTextBox.set(node.element.outerHTML, true);
 	  }
 	
 	  async saveRestriction(node: NodeInfo) {
@@ -128,10 +149,10 @@ export class AppComponent {
 		addRestriction.messageId = this.selectedMessage.id.toString();
 		addRestriction.elementId = node.element.outerHTML;
 		addRestriction.id = addRestriction.messageId + addRestriction.elementId;
-		addRestriction.rule = this.newRestriction;
+		//addRestriction.rule = this.newRestriction;
 
 		await this.service.addRestriction(addRestriction);
 		// Add any additional logic after saving the restriction
-		this.showTextBox = false;
+		this.showTextBox.set(node.element.outerHTML, false);
 	  }
 }

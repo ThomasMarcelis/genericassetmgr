@@ -105,6 +105,10 @@ export class MessageService {
         return restriction;
     }
 
+    async getRestrictions(messageId: string): Promise<Restriction[]> {
+        return this._restrictions$.value.get(messageId) || [];
+    }
+
     get messages$() {
         return this._messages$.asObservable();
     }
