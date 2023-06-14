@@ -49,9 +49,10 @@ function sort(messages: Message[], column: SortColumn, direction: string): Messa
 
 function matches(message: Message, term: string, pipe: PipeTransform) {
 	return (
-		message.name.toLowerCase().includes(term.toLowerCase()) ||
-		message.description.toLowerCase().includes(term.toLowerCase()) ||
-		message.content.toLowerCase().includes(term.toLowerCase())
+		message.id.toLowerCase().includes(term.toLowerCase()) ||
+		message.application.toLowerCase().includes(term.toLowerCase()) ||
+		message.domain.toLowerCase().includes(term.toLowerCase()) ||
+		message.domainOwner.toLowerCase().includes(term.toLowerCase())
 	);
 }
 
@@ -89,12 +90,8 @@ export class MessageService {
 		this._search$.next();
 	}
 
-    addRestriction(messageId: string, elementId: string, rule: string): Restriction {
-        let restriction = new Restriction();
-        restriction.id = messageId + elementId;
-        restriction.messageId = messageId;
-        restriction.elementId = elementId;
-        restriction.rule = rule;
+    addRestriction(restriction: Restriction): Restriction {;
+        restriction.id = restriction.messageId + restriction.elementId;
 
         //client.post('restrictions', restriction);
 

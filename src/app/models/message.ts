@@ -1,23 +1,28 @@
 export class Message {
-    id: number;
+    id: string;
     name: string;
     description: string;
     content: string;
     ownerId: number;
-    appId: number;
+    application: string;
     type: MessageType;
     restrictions: string[];
+    //todo: refer to registered domains
+    domain: String;
+    domainOwner: String;
 //    notes: Note[];
   
-    constructor(id: number, name: string, description: string, content: string, ownerId: number, appId: number, type: MessageType) {
+    constructor(id: string, name: string, description: string, content: string, ownerId: number, application: string, type: MessageType, domain: string, domainOwner: string) {
       this.id = id;
       this.name = name;
       this.description = description;
       this.content = content;
       this.ownerId = ownerId;
-      this.appId = appId;
+      this.application = application;
       this.type = type;
       this.restrictions = [];
+      this.domain = domain;
+      this.domainOwner = domainOwner;
 //      this.notes = [];
     }
   }

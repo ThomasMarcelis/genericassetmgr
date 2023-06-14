@@ -35,20 +35,20 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th scope="col">#</th>
-							<th scope="col" sortable="name" (sort)="onSort($event)">Message</th>
-							<th scope="col" sortable="description" (sort)="onSort($event)">Description</th>
-							<th scope="col" sortable="owner" (sort)="onSort($event)">Owner</th>
+							<th scope="col">Message ID</th>
+							<th scope="col" sortable="domain" (sort)="onSort($event)">Message Domain</th>
+							<th scope="col" sortable="domainOwner" (sort)="onSort($event)">Domain Owner</th>
+							<th scope="col" sortable="applicaton" (sort)="onSort($event)">Application</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr *ngFor="let message of messages$ | async" (click)="onRowClicked(message)">
 							<th scope="row">{{ message.id }}</th>
 							<td>
-								<ngb-highlight [result]="message.name" [term]="service.searchTerm"></ngb-highlight>
+								<ngb-highlight [result]="message.domain" [term]="service.searchTerm"></ngb-highlight>
 							</td>
-							<td><ngb-highlight [result]="message.description" [term]="service.searchTerm"></ngb-highlight></td>
-							<td><ngb-highlight [result]="message.owner" [term]="service.searchTerm"></ngb-highlight></td>
+							<td><ngb-highlight [result]="message.domainOwner" [term]="service.searchTerm"></ngb-highlight></td>
+							<td><ngb-highlight [result]="message.application" [term]="service.searchTerm"></ngb-highlight></td>
 						</tr>
 					</tbody>
 				</table>
@@ -89,7 +89,11 @@
 					<tr *ngFor="let node of nodes">
 							<th scope="row">{{ node.depth }} </th>
 							<td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
-							<td><input type="text" id="fname" name="fname"></td>
+							<td><button (click)="addNewRestriction()">Add New Restriction</button>
+								<div *ngIf="showTextBox">
+								  <input type="text" [(ngModel)]="newRestriction">
+								  <button (click)="saveRestriction(node)">Save</button>
+								</div></td>
 						</tr> 
 					</tbody>
 				</table>

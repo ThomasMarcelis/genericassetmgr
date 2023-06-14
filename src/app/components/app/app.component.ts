@@ -3,7 +3,7 @@ import { Component, QueryList, ViewChildren } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { NgbdSortableHeader, SortEvent } from '../../sortable.directive';
-import { Message, MessageType } from 'src/app/models/message';
+import { Message, MessageType, Restriction } from 'src/app/models/message';
 import { MessageService } from 'src/app/services/message.service';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
@@ -67,8 +67,7 @@ export class AppComponent {
 	total$: Observable<number>;
 	selectedMessage: Message;
 	@ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
-	nodes: { element: Element; depth: number; }[];
-
+	nodes: NodeInfo[];
 	showTextBox = false;
 	newRestriction: string;
 
@@ -122,8 +121,16 @@ export class AppComponent {
 		this.newRestriction = '';
 	  }
 	
-	  async saveRestriction() {
-		await this.service.addRestriction(this.newRestriction);
+	  async saveRestriction(node: NodeInfo) {
+
+		//TODO: Change node IDs
+		let addRestriction = new Restriction()
+		addRestriction.messageId = this.selectedMessage.id.toString();
+		addRestriction.elementId = node.element.outerHTML;
+		addRestriction.id = addRestriction.messageId + addRestriction.elementId;
+		addRestriction.rule = this.newRestriction;
+
+		await this.service.addRestriction(addRestriction);
 		// Add any additional logic after saving the restriction
 		this.showTextBox = false;
 	  }
