@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { MessageComponent } from './components/message/message.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { MessageComponent } from './components/message/message.component';
     AsyncPipe,
     NgFor,
     DecimalPipe,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

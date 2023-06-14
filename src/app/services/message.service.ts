@@ -1,7 +1,7 @@
 // message.service.ts
 
 import { Injectable, PipeTransform } from '@angular/core';
-import { Message } from '../models/message';
+import { Message, Restriction } from '../models/message';
 import { BehaviorSubject, Observable, Subject, debounceTime, delay, of, switchMap, tap } from 'rxjs';
 import { sampleMessages } from '../models/messages';
 import { SortColumn, SortDirection } from '../sortable.directive';
@@ -29,8 +29,20 @@ function sort(messages: Message[], column: SortColumn, direction: string): Messa
 		return messages;
 	} else {
 		return [...messages].sort((a, b) => {
-			const res = compare(a[column], b[column]);
-			return direction === 'asc' ? res : -res;
+
+            const valueA = a[column];
+            const valueB = b[column];
+
+            // Check that valueA and valueB are strings or numbers, compare does not deal with others yet
+            if (
+                (typeof valueA === 'string' || typeof valueA === 'number') &&
+                (typeof valueB === 'string' || typeof valueB === 'number')
+            ) {
+                const res = compare(valueA, valueB);
+                return direction === 'asc' ? res : -res;
+            } else {
+                return 0;
+            }
 		});
 	}
 }
@@ -51,6 +63,7 @@ export class MessageService {
     private _loading$ = new BehaviorSubject<boolean>(true);
 	private _search$ = new Subject<void>();
 	private _messages$ = new BehaviorSubject<Message[]>([]);
+    private _restrictions$ = new BehaviorSubject<Map<String, Restriction[]>>(new Map<String, Restriction[]>());
 	private _total$ = new BehaviorSubject<number>(0);
 
 	private _state: State = {
@@ -75,6 +88,25 @@ export class MessageService {
 
 		this._search$.next();
 	}
+
+    addRestriction(messageId: string, elementId: string, rule: string): Restriction {
+        let restriction = new Restriction();
+        restriction.id = messageId + elementId;
+        restriction.messageId = messageId;
+        restriction.elementId = elementId;
+        restriction.rule = rule;
+
+        //client.post('restrictions', restriction);
+
+        const messageRestrictions = this._restrictions$.value.get(restriction.messageId);
+        if(!messageRestrictions) {
+            this._restrictions$.value.set(restriction.messageId, [restriction]);
+        } else {
+            messageRestrictions.push(restriction);
+        }
+        
+        return restriction;
+    }
 
     get messages$() {
         return this._messages$.asObservable();

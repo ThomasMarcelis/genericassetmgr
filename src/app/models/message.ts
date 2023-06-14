@@ -6,7 +6,7 @@ export class Message {
     ownerId: number;
     appId: number;
     type: MessageType;
-//    restrictions: Restriction[];
+    restrictions: string[];
 //    notes: Note[];
   
     constructor(id: number, name: string, description: string, content: string, ownerId: number, appId: number, type: MessageType) {
@@ -17,7 +17,7 @@ export class Message {
       this.ownerId = ownerId;
       this.appId = appId;
       this.type = type;
-//      this.restrictions = [];
+      this.restrictions = [];
 //      this.notes = [];
     }
   }

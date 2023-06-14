@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { NgbdSortableHeader, SortEvent } from '../../sortable.directive';
 import { Message, MessageType } from 'src/app/models/message';
 import { MessageService } from 'src/app/services/message.service';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 
 interface NodeInfo {
@@ -68,11 +69,13 @@ export class AppComponent {
 	@ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
 	nodes: { element: Element; depth: number; }[];
 
+	showTextBox = false;
+	newRestriction: string;
+
 	constructor(public service: MessageService) {
 		this.messages$ = service.messages$;
 		this.total$ = service.total$;
 	}
-
 	
 
 	onSort({ column, direction }: SortEvent) {
@@ -113,4 +116,15 @@ export class AppComponent {
 			return nodes
 		//}
 	}
+
+	addNewRestriction() {
+		this.showTextBox = true;
+		this.newRestriction = '';
+	  }
+	
+	  async saveRestriction() {
+		await this.service.addRestriction(this.newRestriction);
+		// Add any additional logic after saving the restriction
+		this.showTextBox = false;
+	  }
 }

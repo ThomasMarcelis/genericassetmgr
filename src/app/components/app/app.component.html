@@ -76,23 +76,23 @@
 				<p>Content:</p>
 
 			  </div>
-
-			  <table class="table table-striped">
-				<thead>
-				  <tr>
-					<th scope="col">Depth</th>
-					<th scope="col">Tag</th>
-					<th scope="col">Restrictions & Notes</th>
-				  </tr>
-				</thead>
-				<tbody>
-					<tr *ngFor="let node of nodes">
-						<th scope="row">{{ node.depth }} </th>
-						<td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
-						<td><input type="text" id="fname" name="fname"></td>
+				<table class="table table-striped">
+					<thead>
+					<tr>
+						<th scope="col">Depth</th>
+						<th scope="col">Tag</th>
+						<th scope="col">Restrictions & Notes</th>
 					</tr>
-				</tbody>
-			  </table>
+					</thead>
+					<tbody>
+						
+					<tr *ngFor="let node of nodes">
+							<th scope="row">{{ node.depth }} </th>
+							<td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
+							<td><input type="text" id="fname" name="fname"></td>
+						</tr> 
+					</tbody>
+				</table>
 			  
 		</div>
 	</div>
