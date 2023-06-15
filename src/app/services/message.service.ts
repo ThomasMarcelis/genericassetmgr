@@ -107,7 +107,10 @@ export class MessageService {
     }
 
     async getRestrictions(messageId: string): Promise<Restriction[]> {
-        return this._restrictions$.value.get(messageId) || [];
+        //console.log('getRestrictions', messageId);
+        let restrictions = sampleRestrictions.filter((restriction) => restriction.messageId === messageId) || [];
+        //console.log('getRestrictions Result', restrictions);
+        return restrictions;
     }
 
     get messages$() {

@@ -120,13 +120,17 @@ export class AppComponent {
 		// Get the restrictions for this message, async
 		this.service.getRestrictions(message.id.toString()).then(restrictions => {
 			restrictions.forEach(restriction => {
+				console.log("restrictions: ", restriction);
 				const elementList = this.selectedRestrictionMap.get(restriction.elementId);
-				if(elementList) {
+				console.log(elementList);
+				console.log(restriction.elementId);
+				if(elementList != undefined) {
 					elementList.push(restriction);
 				} else {
 					this.selectedRestrictionMap.get("unmappedrestrictions")?.push(restriction);
 				}
 			});
+			//this.logRestrictions()
 		});
 	  }
 
@@ -155,4 +159,16 @@ export class AppComponent {
 		// Add any additional logic after saving the restriction
 		this.showTextBox.set(node.element.outerHTML, false);
 	  }
+
+
+	  log(val: any) { console.log(val); }
+
+	  logRestrictions() {
+
+		this.selectedRestrictionMap.forEach((value, key) => {
+			console.log(key);
+			console.log(value);
+		});
+
+	   }
 }
