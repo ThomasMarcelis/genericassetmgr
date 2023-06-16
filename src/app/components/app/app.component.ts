@@ -6,6 +6,7 @@ import { NgbdSortableHeader, SortEvent } from '../../sortable.directive';
 import { Message, MessageType, Restriction } from 'src/app/models/message';
 import { MessageService } from 'src/app/services/message.service';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { map, filter, tap } from 'rxjs/operators'
 
 
 interface NodeInfo {
@@ -132,7 +133,28 @@ export class AppComponent {
 			});
 			//this.logRestrictions()
 		});
-	  }
+	}
+
+	getUnqiqueMessageOwners(): Observable<String[]> {
+		return this.messages$.pipe(
+			map(messages => [ ...new Set(messages.map(message => message.domainOwner))]),
+			tap(_ => console.log('fetched message owners')),
+		)
+	}
+
+	getUnqiqueMessageApplications(): Observable<String[]> {
+		return this.messages$.pipe(
+			map(messages => [ ...new Set(messages.map(message => message.application))]),
+			tap(_ => console.log('fetched message apps')),
+		)
+	}
+
+	getUnqiqueMessageDomains(): Observable<String[]> {
+		return this.messages$.pipe(
+			map(messages => [ ...new Set(messages.map(message => message.domain))]),
+			tap(_ => console.log('fetched message Domains')),
+		)
+	}
 
 	parseMessage(message: Message): NodeListOf<Element> {
 		//if(message.type == MessageType.XSD) {

@@ -53,6 +53,7 @@ function matches(message: Message, term: string, pipe: PipeTransform) {
 		message.id.toLowerCase().includes(term.toLowerCase()) ||
 		message.application.toLowerCase().includes(term.toLowerCase()) ||
 		message.domain.toLowerCase().includes(term.toLowerCase()) ||
+        message.content.toLowerCase().includes(term.toLowerCase()) ||
 		message.domainOwner.toLowerCase().includes(term.toLowerCase())
 	);
 }
@@ -70,7 +71,7 @@ export class MessageService {
 
 	private _state: State = {
 		page: 1,
-		pageSize: 4,
+		pageSize: 5,
 		searchTerm: '',
 		sortColumn: '',
 		sortDirection: '',
