@@ -1,38 +1,36 @@
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './components/app/app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SidebarModule } from './sidebar/sidebar.module';
+import { FooterModule } from './shared/footer/footer.module';
+import { NavbarModule} from './shared/navbar/navbar.module';
+import { FixedPluginModule} from './shared/fixedplugin/fixedplugin.module';
 
-import { FormsModule } from '@angular/forms';
-import { NgbPaginationModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { AsyncPipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
-import { MessageComponent } from './components/message/message.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AppComponent } from './app.component';
+import { AppRoutes } from './app.routing';
+
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { MessageService } from "./services/message.service";
+import { DecimalPipe } from "@angular/common";
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    MessageComponent
+    AdminLayoutComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-    FormsModule,
-    NgbPaginationModule,
-    NgbTypeaheadModule,
-    NgIf,
-    AsyncPipe,
-    NgFor,
-    DecimalPipe,
-    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(AppRoutes,{
+      useHash: true
+    }),
+    SidebarModule,
+    NavbarModule,
+    FooterModule,
+    FixedPluginModule
   ],
-  providers: [],
+  providers: [MessageService, DecimalPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-
