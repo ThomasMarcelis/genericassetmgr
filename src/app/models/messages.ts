@@ -37,7 +37,6 @@ export let sampleMessages: Message[] = [
           <xs:attribute name="orderid" type="xs:string" use="required"/>
         </xs:complexType>
       </xs:element>
-      
       </xs:schema>`,
       123, // ownerId
       "BSI", // appId

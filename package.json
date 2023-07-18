@@ -30,11 +30,11 @@
     "@ngui/map": "0.30.3",
     "@popperjs/core": "^2.11.4",
     "arrive": "2.4.1",
+    "bootstrap": "5.2.3",
     "jquery": "3.5.1",
     "moment": "2.29.1",
     "rxjs": "^7.8.1",
     "web-animations-js": "2.3.2",
-    "bootstrap": "5.2.3",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

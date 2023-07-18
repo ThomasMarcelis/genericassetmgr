@@ -13,6 +13,9 @@ import { AppRoutes } from './app.routing';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { MessageService } from "./services/message.service";
 import { DecimalPipe } from "@angular/common";
+import { ConfigService } from "./services/config.service";
+import { ApplicationService } from "./services/application.service";
+import { UserService } from "./services/user.service";
 
 
 @NgModule({
@@ -30,7 +33,7 @@ import { DecimalPipe } from "@angular/common";
     FooterModule,
     FixedPluginModule
   ],
-  providers: [MessageService, DecimalPipe],
+  providers: [MessageService, DecimalPipe, ConfigService, ApplicationService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
