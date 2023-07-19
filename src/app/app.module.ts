@@ -1,6 +1,7 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { SidebarModule } from './sidebar/sidebar.module';
 import { FooterModule } from './shared/footer/footer.module';
@@ -16,6 +17,8 @@ import { DecimalPipe } from "@angular/common";
 import { ConfigService } from "./services/config.service";
 import { ApplicationService } from "./services/application.service";
 import { UserService } from "./services/user.service";
+import { RestrictionService } from "./services/restriction.service";
+import { ExampleValueService } from "./services/exampleValue.service";
 
 
 @NgModule({
@@ -31,9 +34,10 @@ import { UserService } from "./services/user.service";
     SidebarModule,
     NavbarModule,
     FooterModule,
-    FixedPluginModule
+    FixedPluginModule,
+    HttpClientModule
   ],
-  providers: [MessageService, DecimalPipe, ConfigService, ApplicationService, UserService],
+  providers: [MessageService, DecimalPipe, ConfigService, ApplicationService, UserService, RestrictionService, ExampleValueService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -80,90 +80,81 @@
   </div>
 </div>
 <div class="row" *ngIf="messages$ != undefined && selectedMessage">
-  <div class="col-md-12">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="row mx-3 mt-3">
+        <div class="col-lg-8">
+          <label class="form-label">Message ID</label>
+          <h5>{{ selectedMessage.id }}</h5>
+        </div>
+        <div class="col-lg-2">
+          <button type="button" class="btn btn-primary" (click)="saveRestriction(node)">Save</button>
+        </div>
+        <div class="col-lg-2">
+          <button type="button" class="btn btn-primary" (click)="saveRestriction(node)">Subscribe</button>
+        </div>
+      </div>
+      <div class="row mx-3">
+        <div class="col-lg-4">
+          <label class="form-label">Message Domain</label>
+          <p>{{ selectedMessage.domain }}</p>
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label">Message Owner</label>
+          <p>{{ selectedMessage.domainOwner }}</p>
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label">Message Application FROM</label>
+          <p>{{ selectedMessage.application }}</p>
+        </div>
+        <div class="col-lg-2">
+          <label class="form-label">Message Application TO</label>
+          <p>{{ selectedMessage.application }}</p>
+        </div>
+      </div>
+      <div class="row mx-3">
+        <label class="form-label">Description</label>
+        <p>{{ selectedMessage.description }}</p>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="row" *ngIf="messages$ != undefined && selectedMessage">
+  <div class="col-md-8">
     <div class="card">
       <div class="card-header">
+        
       </div>
       <div class="card-body">
-        <div class="table-responsive">
+      
           <div class="col-lg-12">
-            <div class="card">
-              <div class="row mx-3">
-                <div class="col-lg-8">
-                  <label class="form-label">Message ID</label>
-                  <h5>{{ selectedMessage.id }}</h5>
-                </div>
-                <div class="col-lg-2">
-                  <button type="button" class="btn btn-primary" (click)="saveRestriction(node)">Save</button>
-                </div>
-              </div>
-              <div class="row mx-3">
-                <div class="col-lg-4">
-                  <label class="form-label">Message Domain</label>
-                  <p>{{ selectedMessage.domain }}</p>
-                </div>
-                <div class="col-lg-2">
-                  <label class="form-label">Message Owner</label>
-                  <p>{{ selectedMessage.domainOwner }}</p>
-                </div>
-                <div class="col-lg-2">
-                  <label class="form-label">Message Application FROM</label>
-                  <p>{{ selectedMessage.application }}</p>
-                </div>
-                <div class="col-lg-2">
-                  <label class="form-label">Message Application TO</label>
-                  <p>{{ selectedMessage.application }}</p>
-                </div>
-              </div>
-              <div class="row mx-3">
-                <label class="form-label">Descriptoin</label>
-                <p>{{ selectedMessage.description }}</p>
-            </div>
-          </div>
-              <table class="table table-sm table-fixed mx-4 mt-4">
+              <table class="table table-sm table-fixed mx-2 mt-2">
                 <thead>
                 <tr>
                   <th scope="col">Depth</th>
                   <th scope="col">Schema Element</th>
-                  <th scope="col">Restrictions & Notes</th>
                   <th scope="col">Example Value</th>
+                  <th scope="col">Rules</th>
                 </tr>
                 </thead>
                 <tbody>
                   
-                <tr *ngFor="let node of nodes">
+                <tr *ngFor="let node of nodes" (click)="selectNodeForRestrictions(node)">
                     <td >{{ node.depth }} </td>
                     <td [style.padding-left.px]="node.depth * 20">{{ node.startTag }}</td>
                     
-                    <td>
-                      <div class="row">
-                        <div class="col-2"><button type="button" class="btn btn-sm btn-outline-primary btn-float-left" (click)="addNewRestriction(node)">Add</button></div>
-                        <div class="col-5"></div>
-                        <div class="col-5"></div>
-                      </div>
-                      <div class="row" *ngFor="let restriction of selectedRestrictionMap.get(node.element.outerHTML)">
-                        <div class="col-12">{{ restriction.rule }} </div>
-                      </div>
-                      <div class="row" *ngIf="showTextBox.get(node.element.outerHTML)">
-                        <div class="col-12">
-                        <input type="text" [(ngModel)]="newRestriction[node.element.outerHTML]">
-                        <button type="button" class="btn btn-primary" (click)="saveRestriction(node)">Save</button>
-                      </div>
-                      </div>
 
-                    </td>
                       <td>
-                      <div class="row">
-                        <div class="col-2"><button type="button" class="btn btn-sm btn-outline-primary btn-float-left" (click)="addNewRestriction(node)">Add</button></div>
-                        <div class="col-5"></div>
-                        <div class="col-5"></div>
-                      </div>
-                      <div class="row" *ngIf="showTextBox.get(node.element.outerHTML)">
-                        <div class="col-12">
-                        <input type="text" [(ngModel)]="newRestriction[node.element.outerHTML]">
-                        <button type="button" class="btn btn-primary" (click)="saveRestriction(node)">Save</button>
-                      </div>
-                      </div></td>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span><input type="text" size="10" class="form-control" placeholder="{{ getExampleValueForNode(node) | async }}" /></span>
+                          <!--<div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" (click)="editRestriction(restriction)">Save</button>
+                          </div>-->
+                        </div>
+                      </td>
+                      <td>
+                        {{ this.restrictionService.getCountByMessageIdAndElementId(this.selectedMessage.id, node.element.outerHTML) | async }}
+                      </td>
                   </tr> 
                 </tbody>
               </table>
@@ -173,5 +164,37 @@
         </div>
       </div>
     </div>
-  </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div *ngIf="!selectedNodeForRestrictions" class="card-header">
+          <p> Select a row to view and edit restrictions</p>
+        </div>
+        <div class="card-body" *ngIf="selectedNodeForRestrictions">
+                    <p>Showing restrictions for element <b>{{ this.selectedNodeForRestrictions.startTag }}</b></p>
+                    <div *ngIf="selectedNodeForRestrictions">
+                        <ol class="list-group">
+                          <li *ngFor="let restriction of selectedMessageRestrictions | async" class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <span>{{ restriction.rule }}</span>
+                              <div>
+                                <button type="button" class="btn btn-outline-primary btn-sm me-1" (click)="editRestriction(restriction)">Edit</button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteRestriction(restriction)">Delete</button>
+                              </div>
+                            </div>
+                          </li>
+                        </ol>
+                        <div class="mt-2">
+                          <input [(ngModel)]="newRestrictionText" type="text" class="form-control" placeholder="New restriction" />
+                          <button type="button" class="btn btn-primary mt-2" (click)="addRestriction(newRestrictionText)">Add Restriction</button>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="showTextBox.get(selectedNodeForRestrictions.element.outerHTML)">
+                        <div class="col-12">
+                        <input type="text" [(ngModel)]="newRestriction[selectedNodeForRestrictions.element.outerHTML]">
+                        <button type="button" class="btn btn-primary" (click)="saveRestriction(selectedNodeForRestrictions)">Save</button>
+                      </div>
+                    </div>
+
+          </div>
+    </div>
 </div>

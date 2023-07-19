@@ -1,12 +1,14 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { NgbdSortableHeader, SortEvent } from '../../sortable.directive';
 import { Message, MessageType, Restriction } from '../../models/message';
 import { MessageService } from '../../services/message.service';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { map, filter, tap } from 'rxjs/operators'
+import { RestrictionService } from "../../services/restriction.service";
+import { ExampleValueService } from 'app/services/exampleValue.service';
 
 declare interface TableData {
     headerRow: string[];
@@ -36,7 +38,8 @@ interface NodeElement {
   
 	return node;
   }
-  
+
+
 
 
   function getStartTag(element: Element): string {
@@ -77,10 +80,15 @@ export class TableComponent{
 	nodes: NodeInfo[];
 	showTextBox: Map<string, boolean>;
 	newRestriction: Map<string, string>;
-	selectedMessageRestrictions: Restriction[];
+	selectedMessageRestrictions: Observable<Restriction[]>;
 	selectedRestrictionMap: Map<string, Restriction[]>;
+	selectedNodeForRestrictions: NodeInfo;
+	selectedMessageExamples: Observable<Restriction[]>;
+	newRestrictionText = '';
 
-	constructor(public service: MessageService) {
+	constructor(public service: MessageService, public restrictionService: RestrictionService, public exampleValueService: ExampleValueService) {
+		console.log(this.restrictionService)
+		console.log(this.service)
 		this.messages$ = service.messages$;
 		this.total$ = service.total$;
 	}
@@ -97,9 +105,36 @@ export class TableComponent{
 		this.service.sortDirection = direction;
 	}
 
+	getExampleForNode(node: NodeInfo): Observable<Restriction> {
+		return this.selectedMessageExamples.pipe(
+			map((restrictions) => restrictions.filter( (restriction) => restriction.elementId == node.element.outerHTML)),
+			map((restrictions) => (restrictions.length > 0) ? restrictions[0] : undefined)
+		)
+	}
+
+	getExampleValueForNode(node: NodeInfo) : Observable<String> {
+		return this.getExampleForNode(node).pipe(
+			map( (restriction) => restriction ? restriction.rule : "" )
+		)
+	}
+
+	selectNodeForRestrictions(node: NodeInfo): void {
+		console.log("Selected node:")
+		console.log(node)
+		this.selectedNodeForRestrictions = node;
+		this.selectedMessageRestrictions = this.restrictionService.getRestrictionsByMessageIdAndElementId(this.selectedMessage.id, this.selectedNodeForRestrictions.element.outerHTML)
+	}
+
 	onRowClicked(message: Message): void {
 		
 		this.selectedMessage = message;
+		this.selectedMessageRestrictions = of([])
+		this.selectedNodeForRestrictions = undefined
+		this.selectedMessageExamples = this.exampleValueService.getExamplesByMessageId(this.selectedMessage.id);
+
+		this.selectedMessageExamples.pipe(
+			tap(messageExample => console.log('fetched message example', messageExample)),
+		)
 		//this.nodes = this.parseMessage(message);
 		// Parse the XML string to a DOM object
 		const parser = new DOMParser();
@@ -168,33 +203,40 @@ export class TableComponent{
 		//}
 	}
 
-	addNewRestriction(node: NodeInfo) {
-		this.showTextBox.set(node.element.outerHTML, true);
+	addRestriction() {
+		const restriction: Restriction = {
+		  id: 'new', // Placeholder, replace with a function to generate a unique id
+		  rule: this.newRestrictionText,
+		  messageId: this.selectedMessage.id,
+		  elementId: this.selectedNodeForRestrictions.element.outerHTML
+		  // Add other required properties here
+		};
+		this.restrictionService.createRestriction(restriction).subscribe(() => {
+		  this.newRestrictionText = '';  // Clear the input field after successful addition
+		  this.updateRestrictions();
+		});
 	  }
 	
-	  async saveRestriction(node: NodeInfo) {
-
-		//TODO: Change node IDs
-		//let addRestriction = new Restriction()
-		//addRestriction.messageId = this.selectedMessage.id.toString();
-		//addRestriction.elementId = node.element.outerHTML;
-		//addRestriction.id = addRestriction.messageId + addRestriction.elementId;
-		//addRestriction.rule = this.newRestriction;
-
-		//await this.service.addRestriction(addRestriction);
-		// Add any additional logic after saving the restriction
-		this.showTextBox.set(node.element.outerHTML, false);
+	  editRestriction(restriction: Restriction) {
+		this.newRestrictionText = restriction.rule;
 	  }
-
-
-	  log(val: any) { console.log(val); }
-
-	  logRestrictions() {
-
-		this.selectedRestrictionMap.forEach((value, key) => {
-			console.log(key);
-			console.log(value);
+	
+	  saveRestriction(restriction: Restriction) {
+		restriction.rule = this.newRestrictionText;
+		this.restrictionService.updateRestriction(restriction).subscribe(() => {
+		  this.newRestrictionText = '';
+		  this.updateRestrictions();
 		});
-
-	   }
+	  }
+	
+	  deleteRestriction(restriction: Restriction) {
+		this.restrictionService.deleteRestriction(restriction.id).subscribe(() => {
+		  this.updateRestrictions();
+		});
+	  }
+	
+	  private updateRestrictions() {
+		this.selectedMessageRestrictions = this.restrictionService.getRestrictionsByMessageIdAndElementId(this.selectedMessage.id, this.selectedNodeForRestrictions.element.outerHTML);
+	  }
+	   
 }
